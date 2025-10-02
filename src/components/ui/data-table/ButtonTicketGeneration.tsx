@@ -3,7 +3,8 @@ import React from "react"
 import { cx, focusRing } from "@/lib/utils"
 import { RiCheckboxCircleFill, RiCloseCircleFill } from "@remixicon/react"
 
-interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+interface ButtonProps
+  extends Omit<React.ComponentPropsWithoutRef<"button">, "onToggle"> {
   asChild?: boolean
   isLoading?: boolean
   loadingText?: string

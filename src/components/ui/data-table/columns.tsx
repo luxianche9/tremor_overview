@@ -13,7 +13,7 @@ const columnHelper = createColumnHelper<Agent>()
 
 export const createColumns = (
   onUpdateAgent?: (agentId: string, updates: Partial<Agent>) => void,
-): ColumnDef<Agent>[] => [
+) => [
   columnHelper.accessor("registered", {
     enableColumnFilter: true,
     enableSorting: true,
@@ -223,7 +223,7 @@ export const createColumns = (
       )
     },
   }),
-]
+] as ColumnDef<Agent>[]
 
 // For backward compatibility, export default columns without update functionality
-export const columns = createColumns()
+export const columns = createColumns() as ColumnDef<Agent>[]

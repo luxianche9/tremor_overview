@@ -4,11 +4,7 @@ import { Agent } from "@/data/agents/schema"
 import { agents as defaultAgents } from "@/data/agents/agents"
 import { Ticket } from "@/data/support/schema"
 import { tickets as defaultTickets } from "@/data/support/tickets"
-import {
-  getStorageData,
-  initializeStorage,
-  setStorageData,
-} from "@/lib/storage"
+import { initializeStorage, setStorageData } from "@/lib/storage"
 import { useEffect, useState } from "react"
 
 /**
@@ -85,12 +81,9 @@ export function useTickets() {
   }, [])
 
   // Update specific ticket
-  const updateTicket = (
-    ticketId: string,
-    updates: Partial<Ticket>,
-  ) => {
+  const updateTicket = (ticketId: string, updates: Partial<Ticket>) => {
     setTickets((prev) => {
-      const updated = prev.map((ticket, index) => {
+      const updated = prev.map((ticket) => {
         // Use index or another unique identifier if available
         const id = `${ticket.policyNumber}-${ticket.created}`
         return id === ticketId ? { ...ticket, ...updates } : ticket
