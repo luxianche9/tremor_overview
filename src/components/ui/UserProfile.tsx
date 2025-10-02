@@ -50,7 +50,7 @@ function DropdownUserProfile() {
               className="flex size-8 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-white text-xs font-medium text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300"
               aria-hidden="true"
             >
-              ES
+              SA
             </span>
           </button>
         </DropdownMenuTrigger>
@@ -58,7 +58,7 @@ function DropdownUserProfile() {
           align="end"
           className="!min-w-[calc(var(--radix-dropdown-menu-trigger-width))]"
         >
-          <DropdownMenuLabel>emma.stone@acme.com</DropdownMenuLabel>
+          <DropdownMenuLabel>hello@sort.so</DropdownMenuLabel>
           <DropdownMenuGroup>
             <DropdownMenuSubMenu>
               <DropdownMenuSubMenuTrigger>Theme</DropdownMenuSubMenuTrigger>
@@ -102,30 +102,6 @@ function DropdownUserProfile() {
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubMenuContent>
             </DropdownMenuSubMenu>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              Changelog
-              <RiArrowRightUpLine
-                className="mb-1 ml-1 size-3 shrink-0 text-gray-500"
-                aria-hidden="true"
-              />
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Documentation
-              <RiArrowRightUpLine
-                className="mb-1 ml-1 size-3 shrink-0 text-gray-500"
-                aria-hidden="true"
-              />
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Join Slack community
-              <RiArrowRightUpLine
-                className="mb-1 ml-1 size-3 shrink-0 text-gray-500"
-                aria-hidden="true"
-              />
-            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
