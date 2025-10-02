@@ -17,7 +17,6 @@ import {
 } from "@/components/DropdownMenu"
 import { cx, focusRing } from "@/lib/utils"
 import {
-  RiArrowRightUpLine,
   RiComputerLine,
   RiMoonLine,
   RiSunLine,
