@@ -12,11 +12,18 @@ import { columns } from "@/components/ui/data-table-support/columns"
 import { useTickets } from "@/hooks/useStorageData"
 import { volume } from "@/data/support/volume"
 import { RiAddLine } from "@remixicon/react"
+import { useRouter } from "next/navigation"
 import React from "react"
 
 export default function SupportDashboard() {
   const [isOpen, setIsOpen] = React.useState(false)
   const { tickets, createTicket, isLoading } = useTickets()
+  const router = useRouter()
+
+  const handleRowClick = (ticket: (typeof tickets)[0]) => {
+    const ticketId = `${ticket.policyNumber}-${ticket.created}`
+    router.push(`/support/${encodeURIComponent(ticketId)}`)
+  }
 
   if (isLoading) {
     return (
@@ -193,7 +200,7 @@ export default function SupportDashboard() {
           </div>
         </Card>
       </dl>
-      <DataTable data={tickets} columns={columns} />
+      <DataTable data={tickets} columns={columns} onRowClick={handleRowClick} />
     </main>
   )
 }

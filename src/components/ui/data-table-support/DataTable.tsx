@@ -20,9 +20,14 @@ import { DataTablePagination } from "../data-table/DataTablePagination"
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[]
   data: TData[]
+  onRowClick?: (row: TData) => void
 }
 
-export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
+export function DataTable<TData>({
+  columns,
+  data,
+  onRowClick,
+}: DataTableProps<TData>) {
   const pageSize = 16
 
   const table = useReactTable({
@@ -68,7 +73,14 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
           </TableHead>
           <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="odd:bg-gray-50 odd:dark:bg-[#090E1A]">
+              <TableRow
+                key={row.id}
+                className={cx(
+                  "odd:bg-gray-50 odd:dark:bg-[#090E1A]",
+                  onRowClick && "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900/60",
+                )}
+                onClick={() => onRowClick?.(row.original)}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}

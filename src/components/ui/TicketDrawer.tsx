@@ -37,6 +37,9 @@ interface TicketDrawerProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onCreateTicket?: (ticket: Ticket) => void
+  onUpdateTicket?: (ticketId: string, updates: Partial<Ticket>) => void
+  editTicket?: Ticket | null
+  mode?: "create" | "edit"
 }
 
 interface FormPageProps {
@@ -72,11 +75,15 @@ const FormField = ({
   </div>
 )
 
-const FirstPage = ({ formData, onUpdateForm }: FormPageProps) => (
+const FirstPage = ({
+  formData,
+  onUpdateForm,
+  mode,
+}: FormPageProps & { mode: "create" | "edit" }) => (
   <>
     <DrawerHeader>
       <DrawerTitle>
-        <p>Create Support Ticket</p>
+        <p>{mode === "edit" ? "Edit Support Ticket" : "Create Support Ticket"}</p>
         <span className="text-sm font-normal text-gray-500 dark:text-gray-500">
           Ticket Type & Category
         </span>
@@ -306,7 +313,14 @@ const SummaryPage = ({ formData }: { formData: TicketFormData }) => (
   </>
 )
 
-export function TicketDrawer({ open, onOpenChange, onCreateTicket }: TicketDrawerProps) {
+export function TicketDrawer({
+  open,
+  onOpenChange,
+  onCreateTicket,
+  onUpdateTicket,
+  editTicket,
+  mode = "create",
+}: TicketDrawerProps) {
   const [formData, setFormData] = React.useState<TicketFormData>({
     status: "in-progress",
     category: categoryTypes[0].value,
@@ -321,29 +335,64 @@ export function TicketDrawer({ open, onOpenChange, onCreateTicket }: TicketDrawe
 
   const [currentPage, setCurrentPage] = React.useState(1)
 
+  // Update form data when editTicket changes
+  React.useEffect(() => {
+    if (mode === "edit" && editTicket) {
+      setFormData(editTicket)
+    } else if (mode === "create") {
+      setFormData({
+        status: "in-progress",
+        category: categoryTypes[0].value,
+        type: ticketTypes[0].value,
+        policyType: policyTypes[0].value,
+        priority: priorities[0].value,
+        description: "",
+        policyNumber: "",
+        duration: "0",
+        created: new Date().toISOString(),
+      })
+    }
+  }, [mode, editTicket, open])
+
   const handleUpdateForm = (updates: Partial<TicketFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }))
   }
 
   const handleSubmit = () => {
-    // Generate policy number if not provided
-    const policyPrefix = formData.policyType?.toUpperCase() || "GEN"
-    const randomNumber = Math.floor(10000000 + Math.random() * 90000000)
-    const policyNumber = formData.policyNumber || `${policyPrefix}-${randomNumber}`
+    if (mode === "edit" && editTicket) {
+      // Edit mode: update existing ticket
+      const ticketId = `${editTicket.policyNumber}-${editTicket.created}`
+      const updates: Partial<Ticket> = {
+        status: formData.status,
+        description: formData.description,
+        priority: formData.priority,
+        category: formData.category,
+        type: formData.type,
+        duration: formData.duration,
+        policyType: formData.policyType,
+      }
+      onUpdateTicket?.(ticketId, updates)
+    } else {
+      // Create mode: create new ticket
+      const policyPrefix = formData.policyType?.toUpperCase() || "GEN"
+      const randomNumber = Math.floor(10000000 + Math.random() * 90000000)
+      const policyNumber = formData.policyNumber || `${policyPrefix}-${randomNumber}`
 
-    const ticket: Ticket = {
-      status: formData.status || "in-progress",
-      created: new Date().toISOString(),
-      description: formData.description || "",
-      priority: formData.priority || "low",
-      category: formData.category || categoryTypes[0].value,
-      type: formData.type || ticketTypes[0].value,
-      duration: formData.duration || "0",
-      policyNumber: policyNumber,
-      policyType: formData.policyType || policyTypes[0].value,
+      const ticket: Ticket = {
+        status: formData.status || "in-progress",
+        created: new Date().toISOString(),
+        description: formData.description || "",
+        priority: formData.priority || "low",
+        category: formData.category || categoryTypes[0].value,
+        type: formData.type || ticketTypes[0].value,
+        duration: formData.duration || "0",
+        policyNumber: policyNumber,
+        policyType: formData.policyType || policyTypes[0].value,
+      }
+
+      onCreateTicket?.(ticket)
     }
 
-    onCreateTicket?.(ticket)
     onOpenChange(false)
 
     // Reset form for next use
@@ -364,7 +413,13 @@ export function TicketDrawer({ open, onOpenChange, onCreateTicket }: TicketDrawe
   const renderPage = () => {
     switch (currentPage) {
       case 1:
-        return <FirstPage formData={formData} onUpdateForm={handleUpdateForm} />
+        return (
+          <FirstPage
+            formData={formData}
+            onUpdateForm={handleUpdateForm}
+            mode={mode}
+          />
+        )
       case 2:
         return (
           <SecondPage formData={formData} onUpdateForm={handleUpdateForm} />
@@ -402,7 +457,9 @@ export function TicketDrawer({ open, onOpenChange, onCreateTicket }: TicketDrawe
         <Button variant="secondary" onClick={() => setCurrentPage(2)}>
           Back
         </Button>
-        <Button onClick={handleSubmit}>Create Ticket</Button>
+        <Button onClick={handleSubmit}>
+          {mode === "edit" ? "Update Ticket" : "Create Ticket"}
+        </Button>
       </>
     )
   }

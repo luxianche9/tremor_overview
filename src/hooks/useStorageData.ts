@@ -114,6 +114,14 @@ export function useTickets() {
     })
   }
 
+  // Get ticket by ID
+  const getTicketById = (ticketId: string): Ticket | undefined => {
+    return tickets.find((ticket) => {
+      const id = `${ticket.policyNumber}-${ticket.created}`
+      return id === ticketId
+    })
+  }
+
   // Reset to default data
   const resetTickets = () => {
     setTickets(defaultTickets)
@@ -126,6 +134,7 @@ export function useTickets() {
     updateTicket,
     createTicket,
     deleteTicket,
+    getTicketById,
     resetTickets,
   }
 }
