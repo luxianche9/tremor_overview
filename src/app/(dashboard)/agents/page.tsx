@@ -1,9 +1,25 @@
+"use client"
+
 import { Divider } from "@/components/Divider"
-import { columns } from "@/components/ui/data-table/columns"
+import { createColumns } from "@/components/ui/data-table/columns"
 import { DataTable } from "@/components/ui/data-table/DataTable"
-import { agents } from "@/data/agents/agents"
+import { useAgents } from "@/hooks/useStorageData"
 
 export default function Agents() {
+  const { agents, updateAgent, isLoading } = useAgents()
+
+  const columns = createColumns(updateAgent)
+
+  if (isLoading) {
+    return (
+      <main>
+        <div className="flex items-center justify-center py-12">
+          <p className="text-gray-500">Loading agents...</p>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

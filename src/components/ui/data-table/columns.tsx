@@ -11,7 +11,9 @@ import { DataTableColumnHeader } from "./DataTableColumnHeader"
 
 const columnHelper = createColumnHelper<Agent>()
 
-export const columns = [
+export const createColumns = (
+  onUpdateAgent?: (agentId: string, updates: Partial<Agent>) => void,
+): ColumnDef<Agent>[] => [
   columnHelper.accessor("registered", {
     enableColumnFilter: true,
     enableSorting: true,
@@ -210,8 +212,18 @@ export const columns = [
     },
     cell: ({ row }) => {
       return (
-        <ButtonTicketGeneration initalState={row.original.ticket_generation} />
+        <ButtonTicketGeneration
+          initalState={row.original.ticket_generation}
+          onToggle={(newState) => {
+            onUpdateAgent?.(row.original.agent_id, {
+              ticket_generation: newState,
+            })
+          }}
+        />
       )
     },
   }),
-] as ColumnDef<Agent>[]
+]
+
+// For backward compatibility, export default columns without update functionality
+export const columns = createColumns()

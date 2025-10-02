@@ -36,6 +36,7 @@ type TicketFormData = Partial<Ticket>
 interface TicketDrawerProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCreateTicket?: (ticket: Ticket) => void
 }
 
 interface FormPageProps {
@@ -305,7 +306,7 @@ const SummaryPage = ({ formData }: { formData: TicketFormData }) => (
   </>
 )
 
-export function TicketDrawer({ open, onOpenChange }: TicketDrawerProps) {
+export function TicketDrawer({ open, onOpenChange, onCreateTicket }: TicketDrawerProps) {
   const [formData, setFormData] = React.useState<TicketFormData>({
     status: "in-progress",
     category: categoryTypes[0].value,
@@ -325,8 +326,39 @@ export function TicketDrawer({ open, onOpenChange }: TicketDrawerProps) {
   }
 
   const handleSubmit = () => {
-    console.log("Ticket created:", formData)
+    // Generate policy number if not provided
+    const policyPrefix = formData.policyType?.toUpperCase() || "GEN"
+    const randomNumber = Math.floor(10000000 + Math.random() * 90000000)
+    const policyNumber = formData.policyNumber || `${policyPrefix}-${randomNumber}`
+
+    const ticket: Ticket = {
+      status: formData.status || "in-progress",
+      created: new Date().toISOString(),
+      description: formData.description || "",
+      priority: formData.priority || "low",
+      category: formData.category || categoryTypes[0].value,
+      type: formData.type || ticketTypes[0].value,
+      duration: formData.duration || "0",
+      policyNumber: policyNumber,
+      policyType: formData.policyType || policyTypes[0].value,
+    }
+
+    onCreateTicket?.(ticket)
     onOpenChange(false)
+
+    // Reset form for next use
+    setFormData({
+      status: "in-progress",
+      category: categoryTypes[0].value,
+      type: ticketTypes[0].value,
+      policyType: policyTypes[0].value,
+      priority: priorities[0].value,
+      description: "",
+      policyNumber: "",
+      duration: "0",
+      created: new Date().toISOString(),
+    })
+    setCurrentPage(1)
   }
 
   const renderPage = () => {

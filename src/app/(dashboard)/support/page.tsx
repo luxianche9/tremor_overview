@@ -9,13 +9,25 @@ import { ProgressCircle } from "@/components/ProgressCircle"
 import { TicketDrawer } from "@/components/ui/TicketDrawer"
 import { DataTable } from "@/components/ui/data-table-support/DataTable"
 import { columns } from "@/components/ui/data-table-support/columns"
-import { tickets } from "@/data/support/tickets"
+import { useTickets } from "@/hooks/useStorageData"
 import { volume } from "@/data/support/volume"
 import { RiAddLine } from "@remixicon/react"
 import React from "react"
 
 export default function SupportDashboard() {
   const [isOpen, setIsOpen] = React.useState(false)
+  const { tickets, createTicket, isLoading } = useTickets()
+
+  if (isLoading) {
+    return (
+      <main>
+        <div className="flex items-center justify-center py-12">
+          <p className="text-gray-500">Loading support data...</p>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -34,7 +46,11 @@ export default function SupportDashboard() {
           Create Ticket
           <RiAddLine className="-mr-0.5 size-5 shrink-0" aria-hidden="true" />
         </Button>
-        <TicketDrawer open={isOpen} onOpenChange={setIsOpen} />
+        <TicketDrawer
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          onCreateTicket={createTicket}
+        />
       </div>
       <Divider />
       <dl className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

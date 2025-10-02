@@ -8,11 +8,19 @@ interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   isLoading?: boolean
   loadingText?: string
   initalState: boolean
+  onToggle?: (newState: boolean) => void
 }
 
 const ButtonTicketGeneration = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ initalState, className, ...props }: ButtonProps, forwardedRef) => {
+  ({ initalState, onToggle, className, ...props }: ButtonProps, forwardedRef) => {
     const [internalState, setInternalState] = React.useState(initalState)
+
+    const handleClick = () => {
+      const newState = !internalState
+      setInternalState(newState)
+      onToggle?.(newState)
+    }
+
     return (
       <button
         ref={forwardedRef}
@@ -37,7 +45,7 @@ const ButtonTicketGeneration = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className,
         )}
         tremor-id="tremor-raw"
-        onClick={() => setInternalState(!internalState)}
+        onClick={handleClick}
         {...props}
       >
         {internalState ? (
